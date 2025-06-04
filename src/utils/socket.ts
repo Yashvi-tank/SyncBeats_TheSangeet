@@ -5,10 +5,13 @@ let socket: Socket | null = null;
 
 export const getSocket = (): Socket => {
   if (!socket) {
-    // Explicitly target port 5000
-    socket = io("http://localhost:5000", {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port = "5000"; // Backend port
+    const backendUrl = `${protocol}//${hostname}:${port}`;
+    socket = io(backendUrl, {
       transports: ["websocket"],
-      autoConnect: false,
+      autoConnect: true,
     });
   }
   return socket;

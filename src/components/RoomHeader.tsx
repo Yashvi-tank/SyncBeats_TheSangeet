@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "../utils/cn";
 import { FiSend } from "react-icons/fi";
 import { MdQueueMusic } from "react-icons/md";
+import { getSocket } from "../utils/socket";
 
 interface RoomHeaderProps {
   roomId: string;
@@ -46,8 +47,8 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({
         )}
       </div>
 
-      {/* Theme Toggle (plain‐text placeholder) */}
-      <div>
+      {/* Theme Toggle and Exit Button */}
+      <div className="flex items-center gap-4">
         <button
           onClick={() => {
             /* 
@@ -61,6 +62,20 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({
           )}
         >
           Toggle Theme
+        </button>
+        <button
+          onClick={() => {
+            const socket = getSocket();
+            if (socket && socket.connected) {
+              socket.disconnect();
+            }
+            window.location.href = "http://localhost:5173";
+          }}
+          className={cn(
+            "ml-2 px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 transition font-medium"
+          )}
+        >
+          Exit Room
         </button>
       </div>
     </header>

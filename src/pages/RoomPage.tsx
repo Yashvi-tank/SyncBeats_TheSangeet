@@ -226,7 +226,7 @@ const RoomPage: React.FC = () => {
                 <span>
                   Share this room link:{" "}
                   <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                    {window.location.href}
+                    {`http://192.168.56.1:5173/room/${roomId}`}
                   </span>
                 </span>
               </li>
