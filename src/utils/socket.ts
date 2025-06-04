@@ -1,13 +1,13 @@
 // project/src/utils/socket.ts
-import { io, Socket } from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
 export const getSocket = (): Socket => {
   if (!socket) {
     // Explicitly target port 5000
-    socket = io('http://localhost:5000', {
-      transports: ['websocket'],
+    socket = io("http://localhost:5000", {
+      transports: ["websocket"],
       autoConnect: false,
     });
   }
@@ -19,7 +19,7 @@ export const connectToRoom = (roomId: string, username: string): void => {
   if (!socket.connected) {
     socket.connect();
   }
-  socket.emit('join_room', { roomId, username });
+  socket.emit("join_room", { roomId, username });
 };
 
 export const disconnectSocket = (): void => {
@@ -35,41 +35,52 @@ export const sendChatMessage = (
 ): void => {
   const socket = getSocket();
   if (socket.connected) {
-    socket.emit('chat_message', { roomId, message, username });
+    socket.emit("chat_message", { roomId, message, username });
   }
 };
 
 export const emitPlayEvent = (roomId: string): void => {
   const socket = getSocket();
   if (socket.connected) {
-    socket.emit('play', { roomId });
+    socket.emit("play", { roomId });
   }
 };
 
 export const emitPauseEvent = (roomId: string): void => {
   const socket = getSocket();
   if (socket.connected) {
-    socket.emit('pause', { roomId });
+    socket.emit("pause", { roomId });
   }
 };
 
 export const emitSeekEvent = (roomId: string, time: number): void => {
   const socket = getSocket();
   if (socket.connected) {
-    socket.emit('seek', { roomId, time });
+    socket.emit("seek", { roomId, time });
   }
 };
 
 export const emitNextVideo = (roomId: string): void => {
   const socket = getSocket();
   if (socket.connected) {
-    socket.emit('next', { roomId });
+    socket.emit("next", { roomId });
   }
 };
 
 export const emitSyncRequest = (roomId: string): void => {
   const socket = getSocket();
   if (socket.connected) {
-    socket.emit('sync_request', { roomId });
+    socket.emit("sync_request", { roomId });
+  }
+};
+
+export const emitKickUser = (
+  roomId: string,
+  username: string,
+  host: string
+): void => {
+  const socket = getSocket();
+  if (socket.connected) {
+    socket.emit("kick_user", { roomId, username, host });
   }
 };

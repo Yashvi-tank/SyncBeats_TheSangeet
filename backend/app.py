@@ -145,7 +145,8 @@ def handle_join_room(data):
     # Join the Socket.IO room
     join_room(room_id)
     # Add this user to the room's user list (we use the plain username as ID)
-    room['users'].append(username)
+    if username not in room['users']:
+        room['users'].append(username)
 
     # Assign host if it's the first user
     if not room['host']:
@@ -298,6 +299,27 @@ def handle_sync_request(data):
     # Send the current playbackState back to the requester only
     emit('sync_state', {'playbackState': room['playback_state']}, to=request.sid)
     logger.info(f"Sync request in room {room_id}; sending state.")
+
+
+@socketio.on('kick_user')
+def handle_kick_user(data):
+    """Host can remove a user from the room."""
+    room_id = data.get('roomId')
+    username = data.get('username')  # user to kick
+    host = data.get('host')
+    if not room_id or not username or not host:
+        return
+    room = get_room_data(room_id)
+    if not room:
+        return
+    # Only host can kick
+    if room['host'] != host:
+        return
+    if username in room['users']:
+        room['users'].remove(username)
+        socketio.emit('user_list', {'users': room['users']}, to=room_id)
+        socketio.emit('kicked', {'roomId': room_id}, to=room_id)  # Notify all, frontend will handle
+        logger.info(f"Host {host} kicked user {username} from room {room_id}")
 
 
 # ------------------------------
