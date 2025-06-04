@@ -23,14 +23,19 @@ const UserList: React.FC<UserListProps> = ({ users, host, currentUser }) => {
   useEffect(() => {
     const socket = getSocket();
     const handleKicked = () => {
-      toast.error("You have been removed from the room by the host.");
-      window.location.href = "/";
+      // Only redirect if the current user is no longer in the user list
+      setTimeout(() => {
+        if (!users.includes(currentUser)) {
+          toast.error("You have been removed from the room by the host.");
+          window.location.href = "/";
+        }
+      }, 100); // Wait a moment for user_list update
     };
     socket.on("kicked", handleKicked);
     return () => {
       socket.off("kicked", handleKicked);
     };
-  }, []);
+  }, [users, currentUser]);
 
   return (
     <div className="flex flex-col h-full">
