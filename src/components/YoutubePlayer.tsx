@@ -4,12 +4,7 @@ import YouTube, {
   YouTubeEvent,
   YouTubeProps,
 } from "react-youtube";
-import {
-  emitPlayEvent,
-  emitPauseEvent,
-  emitSeekEvent,
-  emitNextVideo,
-} from "../utils/socket";
+import { emitPlayEvent, emitPauseEvent, emitSeekEvent } from "../utils/socket";
 
 interface YoutubePlayerProps {
   videoId: string | null;
@@ -67,10 +62,6 @@ const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
       // YT.PlayerState.PAUSED = 2
       else if (state === 2) {
         emitPauseEvent(roomId);
-      }
-      // YT.PlayerState.ENDED = 0
-      else if (state === 0) {
-        emitNextVideo(roomId);
       }
 
       // Emit current time when playing to keep in sync
